@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>第一个three.js文件_WebGL三维场景</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            /* 隐藏body窗口区域滚动条 */
+        }
+    </style>
+    <!--引入three.js三维引擎-->
+    <script src="http://www.yanhuangxueyuan.com/versions/threejsR92/build/three.js"></script>
+    <script src="../resource/orbitControls.js"></script>
+    <!-- <script src="./three.js"></script> -->
+    <!-- <script src="http://www.yanhuangxueyuan.com/threejs/build/three.js"></script> -->
+</head>
+
+<body>
+    <script>
+        /**
+         * 创建场景对象Scene
+         */
+        var scene = new THREE.Scene();
+        /**
+         * 创建网格模型
+         */
+        var box = new THREE.BoxGeometry(100, 100, 100);//创建一个立方体几何对象
+        var material = new THREE.MeshLambertMaterial({ color: 0x0000ff });//材质对象
+
+
+        var mesh = new THREE.Mesh(box, material);//网格模型对象
+
+
+        scene.add(mesh);//网格模型添加到场景中
+
+        /**
+         * 光源设置
+         * 1\点光源    2、平行光  3、聚光灯光源
+         * 1、环境光 AmbientLight
+         * 2\平衡光 DirectionalLight
+         * 3、点光源 PointsLight
+         * 4\聚光灯光源  SpotLight
+         * 5、基类 Light 属性Color intensity(强度)
+         */
+        //点光源
+        var point = new THREE.PointLight(0xffffff);
+        point.position.set(200, 0, 200); //点光源位置
+        scene.add(point); //点光源添加到场景中
+        // 点光源辅助对象
+        let pointsHelper = new THREE.PointLightHelper(point);
+        scene.add(pointsHelper);
+
+        // 平行光
+        // let directionalLight = new THREE.DirectionalLight(0xffffff, 1)
+        // directionalLight.position.set(200, 300, 0);
+        // directionalLight.target = mesh;
+        // scene.add(directionalLight);
+        // // 平行光辅助对象
+        // let directionalLightHelper = new THREE.DirectionalLightHelper(directionalLight)
+        // scene.add(directionalLightHelper)
+
+        // 聚光灯
+        // let spotLight = new THREE.SpotLight(0xffffff)
+        // spotLight.position.set(00, 200, 200);
+        // spotLight.target = mesh
+        // spotLight.angle = Math.PI / 8
+        // scene.add(spotLight)
+        // // 聚光灯辅助对象
+        // var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+        // scene.add(spotLightHelper);
+
+        //环境光
+        var ambient = new THREE.AmbientLight(0x444444);
+        scene.add(ambient);
+        // console.log(scene)
+        // console.log(scene.children)
+        /**
+         * 相机设置
+         */
+        var width = window.innerWidth; //窗口宽度
+        var height = window.innerHeight; //窗口高度
+        var k = width / height; //窗口宽高比
+        var s = 200; //三维场景显示范围控制系数，系数越大，显示的范围越大
+        //创建相机对象
+        var camera = new THREE.OrthographicCamera(-s * k, s * k, s, -s, 1, 1000);
+        camera.position.set(200, 300, 200); //设置相机位置
+        camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+        /**
+         * 创建渲染器对象
+         */
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width, height);//设置渲染区域尺寸
+        renderer.setClearColor(0xb9d3ff, 1); //设置背景颜色
+        document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+        //执行渲染操作   指定场景、相机作为参数
+
+        function render () {
+            renderer.render(scene, camera);
+        }
+        render()
+        let control = new THREE.OrbitControls(camera, renderer.domElement,)
+        control.addEventListener('change', render)
+        let axisHelper = new THREE.AxisHelper(300)
+        scene.add(axisHelper)
+
+    </script>
+</body>
+
+</html>
